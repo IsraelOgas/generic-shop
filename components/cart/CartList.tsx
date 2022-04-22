@@ -2,29 +2,27 @@ import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from "
 import { initialData } from "../../database/products"
 import NextLink from 'next/link'
 import { ItemCounter } from "../ui"
-import { FC } from "react"
-
-const productsInCart = [
-    initialData.products[ 0 ],
-    initialData.products[ 1 ],
-    initialData.products[ 2 ],
-]
+import { FC, useContext } from "react"
+import { CartContext } from "../../context"
 
 interface Props {
     editable?: boolean;
 }
 
+const MAX_QUANTITY_BY_USER = 10
+
 export const CartList: FC<Props> = ({ editable = false }) => {
+    const { cart } = useContext(CartContext);
     return (
         <>
-            { productsInCart.map(product => (
+            { cart.map(product => (
                 <Grid container spacing={ 2 } key={ product.slug } sx={ { mb: 1 } }>
                     <Grid item xs={ 3 }>
                         <NextLink href='/product/slug' passHref>
                             <Link>
                                 <CardActionArea>
                                     <CardMedia
-                                        image={ `/products/${ product.images[ 0 ] }` }
+                                        image={ `/products/${ product.image }` }
                                         component='img'
                                         sx={ { borderRadius: 2 } }
                                     />
@@ -41,9 +39,15 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                                 Talla: <strong>M</strong>
                             </Typography>
 
-                            { editable ? <ItemCounter />
+                            { editable ? (
+                                <ItemCounter
+                                    currentValue={ product.quantity }
+                                    maxValue={ MAX_QUANTITY_BY_USER }
+                                    updateQuantity={ () => {} }
+                                />
+                            )
                                 : <Typography variant='h5'>
-                                    3 items
+                                    {product.quantity} { product.quantity > 1 ? 'productos' : 'producto' }
                                 </Typography> }
 
                         </Box>

@@ -2,9 +2,12 @@ import { Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import { ShopLayout } from '../components/layouts'
 import { ProductList } from '../components/products'
-import { initialData } from '../database/products'
+import { FullScreenLoading } from '../components/ui'
+import { useProducts } from '../hooks'
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
+  const { products, isLoading } = useProducts('/products')
+
   return (
     <ShopLayout title={ 'Generic-Shop - Home' } pageDescription={ 'Encuentra los mejores productos' }>
       <Typography variant='h1' component='h1'>
@@ -16,9 +19,12 @@ const Home: NextPage = () => {
         Todos los productos
       </Typography>
 
-        <ProductList products={ initialData.products as any } />
+      { isLoading
+      ? <FullScreenLoading />
+      : <ProductList products={ products } />
+     }
     </ShopLayout>
   )
 }
 
-export default Home
+export default HomePage
