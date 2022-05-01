@@ -36,8 +36,9 @@ const RegisterPage = () => {
       }, 3000);
       return
     }
-    
-    router.replace('/')
+
+    const dest = router.query.p?.toString() || '/'
+    router.replace(dest)
   }
 
   return (
@@ -122,7 +123,10 @@ const RegisterPage = () => {
             </Grid>
 
             <Grid item xs={ 12 } display='flex' justifyContent='end'>
-              <NextLink href='/auth/login' passHref>
+              <NextLink
+                href={ router.query.p ? `/auth/login?=${ router.query.p }` : '/auth/login'}
+                passHref
+              >
                 <Link>¿Ya tienes cuenta?</Link>
               </NextLink>
             </Grid>

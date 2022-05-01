@@ -1,5 +1,6 @@
 import { FC, useReducer, useEffect } from 'react';
 import { AuthContext, authReducer } from './';
+import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -23,12 +24,16 @@ const AUTH_INITIAL_STATE: AuthState = {
 export const AuthProvider: FC<Props> = ({ children }) => {
 
     const [ state, dispatch ] = useReducer(authReducer, AUTH_INITIAL_STATE);
+    const router = useRouter()
 
     useEffect(() => {
         checkToken();
     }, [])
 
     const checkToken = async () => {
+
+        if (!Cookies.get('token')) return
+
         try {
             const { data } = await shopApi.get('/user/validate-token');
             const { token, user } = data;
@@ -69,11 +74,18 @@ export const AuthProvider: FC<Props> = ({ children }) => {
                 }
             }
 
-            return {
+        return {
                 hasError: true,
                 message: 'No se pudo crear el usuario - intente de nuevo'
             }
         }
+    }
+
+    const logout = () => {
+        Cookies.remove('token')
+        Cookies.remove('cart')
+
+        router.reload()
     }
 
     return (
@@ -83,7 +95,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
             // Methods
             loginUser,
             registerUser,
-
+            logout,
         } }>
             { children }
         </AuthContext.Provider>

@@ -23,19 +23,18 @@ const LoginPage = () => {
   const { loginUser } = useContext(AuthContext)
 
   const onLoginUser = async ({ email, password }: FormData) => {
-    
     setShowError(false)
     const isValidLogin = await loginUser(email, password)
-
     if(!isValidLogin) {
       setShowError(true)
       setTimeout(() => {
         setShowError(false)
-        return
-      }, 3000); 
+      }, 3000)
+      return
     }
 
-    router.replace('/')
+    const dest = router.query.p?.toString() || '/'
+    router.replace(dest)
   }
 
   return (
@@ -107,7 +106,10 @@ const LoginPage = () => {
             </Grid>
 
             <Grid item xs={ 12 } display='flex' justifyContent='end'>
-              <NextLink href='/auth/register' passHref>
+              <NextLink
+                href={ router.query.p ? `/auth/register?=${ router.query.p }` : '/auth/register'}
+                passHref
+              >
                 <Link>¿No tienes cuenta?</Link>
               </NextLink>
             </Grid>
