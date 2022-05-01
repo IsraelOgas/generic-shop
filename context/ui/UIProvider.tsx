@@ -4,6 +4,7 @@ import { UIContext, uiReducer } from './';
 interface Props {
     children?: React.ReactNode;
 }
+
 export interface UIState {
     isMenuOpen: boolean;
 }
